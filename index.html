@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#073b78">
+<title>ISU Lost and Found</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5fb;color:#243047}
+header{background:#073b78;color:#fff;padding:22px 15px;text-align:center}
+.logo{font-size:35px}header h1{margin:8px 0;font-size:23px}header p{margin:5px;font-size:13px}
+nav{display:flex;flex-wrap:wrap;justify-content:center;background:#062c59;padding:8px;gap:5px}
+nav button{background:transparent;color:#fff;border:0;padding:12px 10px;font-weight:bold;cursor:pointer}
+nav button:hover{background:#15549a;border-radius:6px}
+.container{max-width:900px;margin:auto;padding:18px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #00000010}
+h2{color:#073b78}
+input,select,textarea{width:100%;padding:13px;margin:8px 0 15px;border:1px solid #ccd5e2;border-radius:7px;font-size:15px}
+textarea{min-height:90px;resize:vertical}label{font-weight:bold;font-size:14px}
+.main-btn{background:#0753a5;color:#fff;border:0;border-radius:7px;padding:13px;width:100%;font-size:16px;font-weight:bold;cursor:pointer;margin:5px 0}
+.main-btn:hover{background:#063c79}.green-btn{background:#16834a}.red-btn{background:#bd3030}.orange-btn{background:#c77b12}
+.small-btn{border:0;border-radius:5px;color:#fff;padding:9px;margin:4px 2px;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#e8f1ff;padding:17px 5px;text-align:center;border-radius:10px}
+.stat strong{display:block;color:#0753a5;font-size:25px}
+.report{border:1px solid #dce3ed;padding:15px;margin:12px 0;border-radius:9px;background:#fff}
+.report h3{margin-top:0;color:#073b78}
+.status{display:inline-block;padding:5px 9px;border-radius:5px;background:#fff0cc;color:#805500;font-size:12px;font-weight:bold}
+.status.Verified{background:#d8f5e3;color:#126535}.status.Rejected{background:#ffe0e0;color:#a00000}.status.Returned{background:#dceaff;color:#0753a5}
+footer{text-align:center;background:#062c59;color:#fff;padding:20px;margin-top:30px;font-size:13px}
+.center{text-align:center}
+.notice{background:#fff5d9;padding:12px;border-radius:7px;font-size:13px}
+.muted{color:#65748b;font-size:13px}.hidden{display:none!important}
+button:disabled{opacity:.6;cursor:not-allowed}
+@media(max-width:480px){.stats{grid-template-columns:1fr}nav button{font-size:12px;padding:10px 6px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🎓</div>
+  <h1>ISU LOST AND FOUND</h1>
+  <p>Scan • Report • Recover</p><p>Isabela State University</p>
+</header>
+<nav>
+  <button data-page="home">Home</button>
+  <button data-page="submit">Submit Report</button>
+  <button data-page="reports">View Reports</button>
+  <button data-page="admin">Administrator</button>
+</nav>
+
+<div class="container">
+<section id="home" class="page active">
+  <div class="card center">
+    <h2>Welcome to ISU Lost and Found!</h2>
+    <p>Lost something? Found something?</p>
+    <p>Use this system to help return lost belongings to their rightful owners.</p>
+    <button class="main-btn" data-go="submit">Submit a Report</button>
+  </div>
+  <div class="card">
+    <h2>System Overview</h2>
+    <div class="stats">
+      <div class="stat"><strong id="totalReports">0</strong>Total Reports</div>
+      <div class="stat"><strong id="lostCount">0</strong>Lost Items</div>
+      <div class="stat"><strong id="foundCount">0</strong>Found Items</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>How to Use</h2>
+    <p>1. Scan the official Lost and Found QR code.</p>
+    <p>2. Select Report Lost Item or Report Found Item.</p>
+    <p>3. Enter the necessary information and submit.</p>
+    <p>4. Contact the university's authorized administrator for assistance.</p>
+  </div>
+</section>
+
+<section id="submit" class="page">
+  <div class="card">
+    <h2>Submit a Report</h2>
+    <form id="reportForm">
+      <label for="reportType">Report Type *</label>
+      <select id="reportType" required>
+        <option value="">Select Report Type</option>
+        <option value="Lost Item">Report Lost Item</option>
+        <option value="Found Item">Report Found Item</option>
+      </select>
+      <label for="reporterName">Full Name *</label>
+      <input id="reporterName" maxlength="80" autocomplete="name" placeholder="Enter your full name" required>
+      <label for="studentID">Student ID (Optional)</label>
+      <input id="studentID" maxlength="30" placeholder="Enter your student ID">
+      <label for="itemName">Item Name *</label>
+      <input id="itemName" maxlength="80" placeholder="Example: Wallet" required>
+      <label for="description">Item Description *</label>
+      <textarea id="description" maxlength="500" placeholder="Describe the item, color, design and identifying features" required></textarea>
+      <label for="itemDate">Date Lost or Found *</label>
+      <input type="date" id="itemDate" required>
+      <label for="itemLocation">Location *</label>
+      <input id="itemLocation" maxlength="120" placeholder="Example: Classroom 204" required>
+      <label for="contact">Contact Information *</label>
+      <input id="contact" maxlength="100" placeholder="Phone number or email" required>
+      <p class="notice">Your name, student ID and contact information are kept private and are visible only to authorized administrators. Public reports do not show your contact details. Do not enter passwords or other sensitive information.</p>
+      <button id="submitButton" type="submit" class="main-btn">Submit Report</button>
+      <p id="submitMessage" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<section id="reports" class="page">
+  <div class="card">
+    <h2>Lost and Found Reports</h2>
+    <input id="searchReport" placeholder="Search item name..." aria-label="Search item name">
+    <select id="filterType" aria-label="Filter reports">
+      <option value="All">All Reports</option>
+      <option value="Lost Item">Lost Items</option>
+      <option value="Found Item">Found Items</option>
+    </select>
+    <div id="reportsList"><p>Loading reports...</p></div>
+  </div>
+</section>
+
+<section id="admin" class="page">
+  <div class="card" id="adminLoginCard">
+    <h2>Administrator Login</h2>
+    <p>Authorized administrators only.</p>
+    <form id="loginForm">
+      <label for="adminEmail">Administrator email</label>
+      <input type="email" id="adminEmail" autocomplete="username" required>
+      <label for="adminPassword">Password</label>
+      <input type="password" id="adminPassword" autocomplete="current-password" required>
+      <button class="main-btn" type="submit" id="loginButton">Login</button>
+    </form>
+    <p id="loginMessage" role="status"></p>
+    <p class="muted">There is no public administrator registration. An authorized project owner must create the account and grant administrator access.</p>
+  </div>
+  <div id="adminPanel" class="hidden">
+    <div class="card">
+      <h2>Administrator Dashboard</h2>
+      <p id="adminIdentity" class="muted"></p>
+      <button class="main-btn red-btn" id="logoutButton">Logout</button>
+      <div id="adminReports"><p>Loading reports...</p></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <h3>ISU LOST AND FOUND</h3>
+  <p>Scan, Report, and Recover!</p>
+  <p>Isabela State University</p>
+  <p>Lost today, found tomorrow.</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
+  onSnapshot, query, orderBy, serverTimestamp, writeBatch, updateDoc, deleteDoc
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+/*
+  IMPORTANT:
+  1. Create a Firebase project.
+  2. Register a Web App in Firebase Console.
+  3. Paste its firebaseConfig values below.
+  4. Enable Firestore Database and Email/Password Authentication.
+*/
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_FIREBASE_API_KEY",
+  authDomain: "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "PASTE_YOUR_PROJECT_ID",
+  storageBucket: "PASTE_YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+  appId: "PASTE_YOUR_FIREBASE_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const $ = (id) => document.getElementById(id);
+let reportsCache = [];
+let adminIsAuthorized = false;
+let stopPublicListener = null;
+let stopAdminListener = null;
+
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === pageId));
+  if (pageId === "reports") renderPublicReports();
+  if (pageId === "admin" && !adminIsAuthorized) $("adminPanel").classList.add("hidden");
+}
+document.querySelectorAll("[data-page]").forEach(b => b.addEventListener("click", () => showPage(b.dataset.page)));
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => showPage(b.dataset.go)));
+
+function updateStats() {
+  $("totalReports").textContent = reportsCache.length;
+  $("lostCount").textContent = reportsCache.filter(r => r.type === "Lost Item").length;
+  $("foundCount").textContent = reportsCache.filter(r => r.type === "Found Item").length;
+}
+function makeStatus(status) {
+  const span = document.createElement("span");
+  span.className = "status " + status;
+  span.textContent = status || "Pending";
+  return span;
+}
+function addParagraph(parent, label, value) {
+  const p = document.createElement("p");
+  p.textContent = label + value;
+  parent.appendChild(p);
+}
+function renderPublicReports() {
+  const list = $("reportsList");
+  list.replaceChildren();
+  const search = $("searchReport").value.trim().toLowerCase();
+  const filter = $("filterType").value;
+  const visible = reportsCache.filter(r =>
+    (r.item || "").toLowerCase().includes(search) &&
+    (filter === "All" || r.type === filter)
+  );
+  if (!visible.length) {
+    const p = document.createElement("p");
+    p.className = "center";
+    p.textContent = "No reports found.";
+    list.appendChild(p);
+    return;
+  }
+  visible.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "report";
+    const h = document.createElement("h3");
+    h.textContent = r.item || "Unnamed item";
+    card.appendChild(h);
+    addParagraph(card, "Type: ", r.type || "");
+    addParagraph(card, "Description: ", r.description || "");
+    addParagraph(card, "Location: ", r.location || "");
+    addParagraph(card, "Date: ", r.date || "");
+    card.appendChild(makeStatus(r.status));
+    list.appendChild(card);
+  });
+}
+$("searchReport").addEventListener("input", renderPublicReports);
+$("filterType").addEventListener("change", renderPublicReports);
+
+// Live public feed. Only non-sensitive fields are stored in this collection.
+const publicQuery = query(collection(db, "reports"), orderBy("createdAt", "desc"));
+stopPublicListener = onSnapshot(publicQuery, snapshot => {
+  reportsCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  updateStats();
+  renderPublicReports();
+}, error => {
+  console.error(error);
+  $("reportsList").textContent = "Unable to load reports. Check your Firebase setup and Firestore rules.";
+});
+
+$("reportForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const button = $("submitButton");
+  const message = $("submitMessage");
+  button.disabled = true;
+  message.textContent = "Submitting your report...";
+  const publicData = {
+    type: $("reportType").value,
+    item: $("itemName").value.trim(),
+    description: $("description").value.trim(),
+    date: $("itemDate").value,
+    location: $("itemLocation").value.trim(),
+    status: "Pending",
+    createdAt: serverTimestamp()
+  };
+  const privateData = {
+    reporterName: $("reporterName").value.trim(),
+    studentID: $("studentID").value.trim(),
+    contact: $("contact").value.trim(),
+    createdAt: serverTimestamp()
+  };
+  try {
+    const reportRef = doc(collection(db, "reports"));
+    const privateRef = doc(db, "privateReports", reportRef.id);
+    const batch = writeBatch(db);
+    batch.set(reportRef, publicData);
+    batch.set(privateRef, privateData);
+    await batch.commit();
+    $("reportForm").reset();
+    message.textContent = "Report submitted successfully. Your reference number is " + reportRef.id + ".";
+    alert("Your report has been submitted successfully. Reference number: " + reportRef.id);
+    showPage("reports");
+  } catch (error) {
+    console.error(error);
+    message.textContent = "Submission failed. Please check your internet connection or try again later.";
+  } finally {
+    button.disabled = false;
+  }
+});
+
+// Admin access is controlled by Firebase Authentication AND an admins/{uid} document.
+// Signing in alone does not grant administrator permissions.
+onAuthStateChanged(auth, async user => {
+  adminIsAuthorized = false;
+  if (stopAdminListener) { stopAdminListener(); stopAdminListener = null; }
+  if (!user) {
+    $("adminLoginCard").classList.remove("hidden");
+    $("adminPanel").classList.add("hidden");
+    return;
+  }
+  try {
+    const adminDoc = await getDoc(doc(db, "admins", user.uid));
+    if (!adminDoc.exists() || adminDoc.data().active !== true) {
+      await signOut(auth);
+      $("loginMessage").textContent = "This account is not authorized as an administrator.";
+      return;
+    }
+    adminIsAuthorized = true;
+    $("adminLoginCard").classList.add("hidden");
+    $("adminPanel").classList.remove("hidden");
+    $("adminIdentity").textContent = "Signed in as " + user.email;
+    startAdminFeed();
+  } catch (error) {
+    console.error(error);
+    $("loginMessage").textContent = "Could not verify administrator access. Check Firestore rules.";
+    await signOut(auth);
+  }
+});
+
+$("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  $("loginButton").disabled = true;
+  $("loginMessage").textContent = "Signing in...";
+  try {
+    await signInWithEmailAndPassword(auth, $("adminEmail").value.trim(), $("adminPassword").value);
+    $("loginMessage").textContent = "Checking administrator permissions...";
+  } catch (error) {
+    console.error(error);
+    $("loginMessage").textContent = "Login failed. Check your email and password.";
+  } finally {
+    $("loginButton").disabled = false;
+  }
+});
+
+$("logoutButton").addEventListener("click", async () => {
+  await signOut(auth);
+  $("loginForm").reset();
+  $("loginMessage").textContent = "You have logged out.";
+});
+
+function startAdminFeed() {
+  const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
+  stopAdminListener = onSnapshot(q, snapshot => {
+    const panel = $("adminReports");
+    panel.replaceChildren();
+    if (snapshot.empty) { panel.textContent = "No reports available."; return; }
+    snapshot.docs.forEach(reportDoc => {
+      const r = { id: reportDoc.id, ...reportDoc.data() };
+      const card = document.createElement("div");
+      card.className = "report";
+      const title = document.createElement("h3");
+      title.textContent = r.item || "Unnamed item";
+      card.appendChild(title);
+      addParagraph(card, "Type: ", r.type || "");
+      addParagraph(card, "Location: ", r.location || "");
+      addParagraph(card, "Date: ", r.date || "");
+      addParagraph(card, "Description: ", r.description || "");
+      addParagraph(card, "Reference: ", r.id);
+      card.appendChild(makeStatus(r.status));
+      const privateInfo = document.createElement("p");
+      privateInfo.textContent = "Loading private reporter information...";
+      card.appendChild(privateInfo);
+      getDoc(doc(db, "privateReports", r.id)).then(privateDoc => {
+        if (!privateDoc.exists()) { privateInfo.textContent = "No private reporter details found."; return; }
+        const p = privateDoc.data();
+        privateInfo.textContent = "Reporter: " + p.reporterName + " | Student ID: " +
+          (p.studentID || "Not provided") + " | Contact: " + p.contact;
+      }).catch(() => { privateInfo.textContent = "Unable to load private details."; });
+
+      const verify = document.createElement("button");
+      verify.className = "small-btn green-btn"; verify.textContent = "Verify Report";
+      verify.addEventListener("click", () => changeStatus(r.id, "Verified"));
+      const reject = document.createElement("button");
+      reject.className = "small-btn red-btn"; reject.textContent = "Reject Report";
+      reject.addEventListener("click", () => changeStatus(r.id, "Rejected"));
+      const returned = document.createElement("button");
+      returned.className = "small-btn orange-btn"; returned.textContent = "Mark as Returned";
+      returned.addEventListener("click", () => {
+        if (r.status !== "Verified") { alert("Verify the report first."); return; }
+        if (confirm("Have you checked the claimant's identity and confirmed ownership in person?")) {
+          changeStatus(r.id, "Returned");
+        }
+      });
+      const remove = document.createElement("button");
+      remove.className = "small-btn red-btn"; remove.textContent = "Delete Report";
+      remove.addEventListener("click", () => deleteReport(r.id));
+      card.append(verify, reject, returned, remove);
+      panel.appendChild(card);
+    });
+  }, error => {
+    console.error(error);
+    $("adminReports").textContent = "Unable to load administrator reports.";
+  });
+}
+async function changeStatus(id, status) {
+  if (!adminIsAuthorized) return alert("Administrator access required.");
+  try {
+    await updateDoc(doc(db, "reports", id), { status });
+    alert("Report status updated.");
+  } catch (error) {
+    console.error(error); alert("Could not update report.");
+  }
+}
+async function deleteReport(id) {
+  if (!adminIsAuthorized || !confirm("Permanently delete this report?")) return;
+  try {
+    const batch = writeBatch(db);
+    batch.delete(doc(db, "reports", id));
+    batch.delete(doc(db, "privateReports", id));
+    await batch.commit();
+    alert("Report deleted.");
+  } catch (error) {
+    console.error(error); alert("Could not delete report.");
+  }
+}
+
+</script>
+</body>
+  </html>
+                                                         
